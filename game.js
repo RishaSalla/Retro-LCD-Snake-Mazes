@@ -298,19 +298,55 @@ const GameEngine = {
         
         this.clearCanvas();
     },
+
+    // إضافة الذكاء الاصطناعي: دالة للبحث الديناميكي عن نقطة انطلاق آمنة للثعبان
+    findSafeSpawn() {
+        const startY = Math.floor(GRID_SIZE / 2);
+        // البحث يبدأ من منتصف الشاشة ويتوسع للأعلى والأسفل
+        for (let offset = 0; offset <= GRID_SIZE / 2; offset++) {
+            const yPositions = [startY + offset, startY - offset];
+            for (let y of new Set(yPositions)) {
+                if (y >= 0 && y < GRID_SIZE) {
+                    // نبدأ بالبحث عن مساحة تتسع لـ 3 مربعات أفقية متتالية
+                    for (let x = 2; x < GRID_SIZE; x++) {
+                        let safe = true;
+                        for (let i = 0; i < 3; i++) {
+                            if (this.walls.some(w => w.x === x - i && w.y === y)) {
+                                safe = false;
+                                break;
+                            }
+                        }
+                        if (safe) return { x: x, y: y }; // وجدنا مكاناً آمناً!
+                    }
+                }
+            }
+        }
+        // في حالة المتاهات الشديدة التعقيد (نسخة احتياطية)
+        return { x: 10, y: 10 };
+    },
     
     startLevel(levelId) {
         this.currentLevel = levelId;
         const levelData = LEVELS_DATA.find(l => l.id === levelId);
         
-        this.snake = [ {x: 10, y: 10}, {x: 9, y: 10}, {x: 8, y: 10} ];
+        this.walls = levelData.walls;
+        
+        // استخدام الدالة الجديدة لتحديد نقطة انطلاق آمنة
+        const spawnPoint = this.findSafeSpawn();
+        
+        this.snake = [ 
+            {x: spawnPoint.x, y: spawnPoint.y}, 
+            {x: spawnPoint.x - 1, y: spawnPoint.y}, 
+            {x: spawnPoint.x - 2, y: spawnPoint.y} 
+        ];
+        
         this.direction = {x: 1, y: 0};
         this.inputQueue = [];
         this.score = 0;
         this.targetScore = levelData.targetScore;
         this.baseTickRate = levelData.baseTickRate;
         this.currentTickRate = this.baseTickRate;
-        this.walls = levelData.walls;
+        
         this.ghostActive = false;
         if(this.ghostTimeout) clearTimeout(this.ghostTimeout);
         this.startTime = Date.now();
