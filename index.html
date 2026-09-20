@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <!-- منع التكبير والتصغير وتحديث الصفحة بالسحب على الجوال -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Retro LCD Snake Mazes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- شريط الإعلانات الترويجي (يتم التحكم به عبر game.js) -->
+    <div id="promo-banner" class="hidden">
+        <span id="promo-text"></span>
+        <a id="promo-link" href="#" target="_blank"></a>
+    </div>
+
+    <!-- هيكل جهاز الألعاب الكلاسيكي (Game Boy Style) -->
+    <div class="gameboy-frame">
+        <!-- إطار الشاشة الداخلي -->
+        <div class="screen-bezel">
+            <div class="lcd-screen">
+                
+                <!-- شريط المعلومات HUD -->
+                <div class="hud">
+                    <div class="hud-item">المرحلة: <span id="hud-level">1</span></div>
+                    <div class="hud-item">الهدف: <span id="hud-target">0/10</span></div>
+                    <div class="hud-item">النقاط: <span id="hud-score">0</span></div>
+                </div>
+                
+                <!-- لوحة الرسم (Canvas) -->
+                <!-- تم تحديد أبعاد الكانفاس هنا لضبط التناسب الثابت -->
+                <canvas id="game-canvas" width="320" height="320"></canvas>
+                
+                <!-- الطبقات المتراكبة (Overlays) -->
+                
+                <!-- 1. شاشة اختيار المراحل (القائمة الرئيسية) -->
+                <div id="menu-overlay" class="overlay active">
+                    <h1>SNAKE MAZES</h1>
+                    <div id="level-select-grid" class="level-grid"></div>
+                </div>
+                
+                <!-- 2. شاشة الرسائل (الفوز، الخسارة، الإيقاف) -->
+                <div id="message-overlay" class="overlay hidden">
+                    <h2 id="message-title"></h2>
+                    <p id="message-text"></p>
+                    <div class="stars" id="message-stars"></div>
+                    <button id="btn-next-action" class="btn">متابعة</button>
+                    <button id="btn-back-menu" class="btn">القائمة الرئيسية</button>
+                </div>
+
+            </div>
+        </div>
+        
+        <!-- لوحة التحكم السفلية -->
+        <div class="controls-section">
+            <!-- أزرار النظام -->
+            <div class="system-buttons">
+                <button id="btn-start" class="btn-sys">بدء</button>
+                <button id="btn-pause" class="btn-sys">إيقاف</button>
+                <button id="btn-reset-progress" class="btn-sys reset">مسح الحفظ</button>
+            </div>
+            
+            <!-- أزرار التوجيه الافتراضية للجوال (D-Pad) -->
+            <div class="d-pad">
+                <div class="d-pad-row">
+                    <button id="d-up" class="d-btn" aria-label="أعلى">▲</button>
+                </div>
+                <div class="d-pad-row center-row">
+                    <button id="d-left" class="d-btn" aria-label="يسار">◄</button>
+                    <div class="d-center"></div>
+                    <button id="d-right" class="d-btn" aria-label="يمين">►</button>
+                </div>
+                <div class="d-pad-row">
+                    <button id="d-down" class="d-btn" aria-label="أسفل">▼</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- استدعاء ملف الجافاسكريبت في نهاية الـ Body لضمان تحميل الـ DOM -->
+    <script src="game.js"></script>
+</body>
+</html>
