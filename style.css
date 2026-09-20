@@ -1,0 +1,406 @@
+/* ==========================================================================
+   CSS Variables - Retro LCD Color Palette
+   ========================================================================== */
+:root {
+    /* لوحة الألوان الزيتونية الكلاسيكية */
+    --lcd-bg: #9bbc0f;           /* زيتوني فاتح مخضر (خلفية الشاشة) */
+    --lcd-grid: #8bac0f;         /* إضاءة خفيفة وشبكة */
+    --lcd-dark: #306230;         /* زيتوني داكن (الجدران والثعبان) */
+    --lcd-black: #0f380f;        /* زيتوني داكن جداً (النصوص، الرأس، الثمار) */
+    
+    /* ألوان الإطار الخارجي (Game Boy Style) */
+    --case-bg: #e0e0e0;          /* لون هيكل الجهاز */
+    --bezel-bg: #555555;         /* لون الإطار المحيط بالشاشة */
+    --dpad-color: #222222;       /* لون أزرار التحكم */
+    --sys-btn-color: #999999;
+    --sys-btn-active: #444444;
+}
+
+/* ==========================================================================
+   Global Reset & Base Styles
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none; /* منع تحديد النصوص */
+    -webkit-tap-highlight-color: transparent; /* إزالة مربع التحديد الأزرق عند اللمس */
+}
+
+body {
+    background-color: #2c2c2c; /* خلفية الصفحة خارج الجهاز */
+    font-family: 'Courier New', Courier, monospace; /* خط كلاسيكي */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden; /* منع التمرير نهائياً */
+    /* touch-action لمنع السحب وتحديث الصفحة في الجوال */
+    touch-action: none;
+}
+
+/* ==========================================================================
+   Promo Banner
+   ========================================================================== */
+#promo-banner {
+    width: 100%;
+    max-width: 400px;
+    background-color: var(--lcd-black);
+    color: var(--lcd-bg);
+    text-align: center;
+    padding: 8px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#promo-banner.hidden {
+    display: none;
+}
+
+#promo-link {
+    background-color: var(--lcd-bg);
+    color: var(--lcd-black);
+    text-decoration: none;
+    padding: 2px 8px;
+    border-radius: 3px;
+    transition: transform 0.1s;
+}
+
+#promo-link:active {
+    transform: scale(0.95);
+}
+
+/* ==========================================================================
+   GameBoy Hardware Frame
+   ========================================================================== */
+.gameboy-frame {
+    background-color: var(--case-bg);
+    border-radius: 10px 10px 40px 10px;
+    padding: 20px;
+    box-shadow: inset -5px -5px 15px rgba(0,0,0,0.2), 
+                5px 5px 20px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 380px;
+}
+
+.screen-bezel {
+    background-color: var(--bezel-bg);
+    border-radius: 10px 10px 30px 10px;
+    padding: 20px 30px 30px 30px;
+    box-shadow: inset 2px 2px 10px rgba(0,0,0,0.5);
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.screen-bezel::after {
+    content: "BATTERY";
+    position: absolute;
+    top: 30px;
+    left: 8px;
+    font-size: 0.5rem;
+    color: #ff3333;
+    font-family: Arial, sans-serif;
+    letter-spacing: 1px;
+}
+
+.screen-bezel::before {
+    content: "";
+    position: absolute;
+    top: 20px;
+    left: 12px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #ff3333;
+    box-shadow: 0 0 4px #ff3333;
+}
+
+/* ==========================================================================
+   LCD Screen & Game Canvas
+   ========================================================================== */
+.lcd-screen {
+    background-color: var(--lcd-bg);
+    border: 3px solid #333;
+    position: relative;
+    width: 320px;
+    height: 350px; /* Canvas (320) + HUD (30) */
+    overflow: hidden;
+    box-shadow: inset 0 0 10px rgba(15, 56, 15, 0.2);
+    /* تأثير البيكسل للخطوط */
+    image-rendering: pixelated;
+}
+
+.hud {
+    height: 30px;
+    background-color: var(--lcd-bg);
+    border-bottom: 2px solid var(--lcd-dark);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--lcd-black);
+}
+
+#game-canvas {
+    display: block;
+    background-color: var(--lcd-bg);
+}
+
+/* ==========================================================================
+   Overlays (Menus & Messages)
+   ========================================================================== */
+.overlay {
+    position: absolute;
+    top: 30px; /* أسفل الـ HUD */
+    left: 0;
+    width: 100%;
+    height: 320px; /* مطابقة لحجم الكانفاس */
+    background-color: rgba(155, 188, 15, 0.9); /* خلفية شفافة من لون الـ LCD */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    text-align: center;
+    padding: 10px;
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+.overlay h1 {
+    color: var(--lcd-black);
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 0 var(--lcd-grid);
+}
+
+.overlay h2 {
+    color: var(--lcd-black);
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.overlay p {
+    color: var(--lcd-dark);
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+/* Level Grid */
+.level-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    width: 90%;
+    max-height: 220px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* تخصيص شريط التمرير الكلاسيكي */
+.level-grid::-webkit-scrollbar { width: 6px; }
+.level-grid::-webkit-scrollbar-track { background: var(--lcd-grid); }
+.level-grid::-webkit-scrollbar-thumb { background: var(--lcd-black); }
+
+.level-btn {
+    background-color: var(--lcd-bg);
+    border: 2px solid var(--lcd-black);
+    color: var(--lcd-black);
+    padding: 10px 5px;
+    font-family: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.1s;
+}
+
+.level-btn:disabled {
+    opacity: 0.4;
+    border-style: dashed;
+    cursor: not-allowed;
+}
+
+.level-btn:not(:disabled):active {
+    background-color: var(--lcd-black);
+    color: var(--lcd-bg);
+}
+
+.level-stars {
+    display: block;
+    font-size: 0.6rem;
+    margin-top: 3px;
+    letter-spacing: 1px;
+}
+
+.stars {
+    font-size: 1.5rem;
+    color: var(--lcd-black);
+    margin-bottom: 15px;
+    letter-spacing: 5px;
+}
+
+/* Overlay Buttons */
+.btn {
+    background-color: var(--lcd-bg);
+    border: 2px solid var(--lcd-black);
+    color: var(--lcd-black);
+    padding: 8px 15px;
+    margin: 5px;
+    font-family: inherit;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 80%;
+}
+
+.btn:active {
+    background-color: var(--lcd-black);
+    color: var(--lcd-bg);
+}
+
+/* ==========================================================================
+   Controls Section (Hardware Buttons)
+   ========================================================================== */
+.controls-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* System Buttons (Start, Pause, Reset) */
+.system-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-sys {
+    background-color: var(--sys-btn-color);
+    border: none;
+    border-radius: 10px;
+    padding: 5px 15px;
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 4px 0 #666;
+    cursor: pointer;
+    transform: rotate(-15deg);
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.btn-sys:active {
+    box-shadow: 0 1px 0 #666;
+    transform: rotate(-15deg) translateY(3px);
+    background-color: var(--sys-btn-active);
+}
+
+.btn-sys.reset {
+    background-color: #cc4444;
+    box-shadow: 0 4px 0 #882222;
+}
+.btn-sys.reset:active {
+    box-shadow: 0 1px 0 #882222;
+    background-color: #aa2222;
+}
+
+/* D-Pad (Directional Buttons) */
+.d-pad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--case-bg); /* دمج مع الخلفية */
+}
+
+.d-pad-row {
+    display: flex;
+    justify-content: center;
+}
+
+.center-row {
+    align-items: center;
+}
+
+.d-btn {
+    width: 45px;
+    height: 45px;
+    background-color: var(--dpad-color);
+    border: none;
+    color: #444; /* لون السهم خفيف جدا */
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #111, inset 0 2px 5px rgba(255,255,255,0.1);
+}
+
+.d-btn:active {
+    box-shadow: 0 1px 0 #111, inset 0 2px 5px rgba(0,0,0,0.5);
+    transform: translateY(3px);
+}
+
+/* تشكيل أزرار الـ D-Pad لتبدو كقطعة واحدة زائدية */
+#d-up { border-radius: 5px 5px 0 0; }
+#d-down { border-radius: 0 0 5px 5px; }
+#d-left { border-radius: 5px 0 0 5px; }
+#d-right { border-radius: 0 5px 5px 0; }
+
+.d-center {
+    width: 45px;
+    height: 45px;
+    background-color: var(--dpad-color);
+    box-shadow: inset 0 2px 5px rgba(255,255,255,0.05);
+}
+
+/* ==========================================================================
+   Responsive Design for smaller screens
+   ========================================================================== */
+@media (max-width: 400px) {
+    .gameboy-frame {
+        padding: 10px;
+        border-radius: 5px 5px 20px 5px;
+    }
+    
+    .screen-bezel {
+        padding: 15px;
+    }
+    
+    .lcd-screen {
+        width: 280px;
+        height: 310px; /* Scale down proportionally */
+    }
+    
+    #game-canvas {
+        /* تصغير الكانفاس عبر CSS للحفاظ على التناسب الداخلي */
+        width: 280px;
+        height: 280px;
+    }
+    
+    .overlay {
+        height: 280px;
+    }
+    
+    .level-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .d-btn, .d-center {
+        width: 40px;
+        height: 40px;
+    }
+}
