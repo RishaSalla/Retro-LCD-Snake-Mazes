@@ -281,7 +281,8 @@ const GameEngine = {
         this.state = 'MENU';
         if(this.animationId) cancelAnimationFrame(this.animationId);
         
-        document.getElementById('menu-overlay').classList.add('active');
+        // التعديل هنا: إزالة class "hidden" بشكل صريح بدلاً من إضافة "active"
+        document.getElementById('menu-overlay').classList.remove('hidden');
         document.getElementById('message-overlay').classList.add('hidden');
         
         const grid = document.getElementById('level-select-grid');
@@ -340,7 +341,8 @@ const GameEngine = {
         document.getElementById('hud-level').innerText = levelId;
         this.updateHUD();
         
-        document.getElementById('menu-overlay').classList.remove('active');
+        // التعديل هنا: إضافة class "hidden" بشكل صريح بدلاً من إزالة "active"
+        document.getElementById('menu-overlay').classList.add('hidden');
         document.getElementById('message-overlay').classList.add('hidden');
         
         this.state = 'PLAYING';
