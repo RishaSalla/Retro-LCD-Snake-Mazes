@@ -85,7 +85,7 @@ for (let i = 1; i <= 20; i++) {
     LEVELS_DATA.push({
         id: i,
         targetScore: 5 + Math.floor(i * 1.5),
-        baseSpeed: Math.max(80, 160 - (i * 3)),
+        baseTickRate: Math.max(80, 160 - (i * 3)),
         walls: generateLevelWalls(i)
     });
 }
@@ -330,7 +330,6 @@ const GameEngine = {
         this.loop(performance.now());
     },
     
-    // التعديل الجذري لمنع التجمّد نهائياً:
     spawnFruit() {
         let valid = false;
         let tempX, tempY;
