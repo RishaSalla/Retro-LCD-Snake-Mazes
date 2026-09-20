@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- شريط الإعلانات الترويجي (يتم التحكم به عبر game.js) -->
+    <!-- شريط الإعلانات الترويجي -->
     <div id="promo-banner" class="hidden">
         <span id="promo-text"></span>
         <a id="promo-link" href="#" target="_blank"></a>
@@ -28,13 +28,12 @@
                 </div>
                 
                 <!-- لوحة الرسم (Canvas) -->
-                <!-- تم تحديد أبعاد الكانفاس هنا لضبط التناسب الثابت -->
                 <canvas id="game-canvas" width="320" height="320"></canvas>
                 
                 <!-- الطبقات المتراكبة (Overlays) -->
                 
-                <!-- 1. شاشة اختيار المراحل (القائمة الرئيسية) -->
-                <div id="menu-overlay" class="overlay active">
+                <!-- 1. شاشة اختيار المراحل (تم تعديل السطر التالي بإزالة فئة active) -->
+                <div id="menu-overlay" class="overlay">
                     <h1>SNAKE MAZES</h1>
                     <div id="level-select-grid" class="level-grid"></div>
                 </div>
